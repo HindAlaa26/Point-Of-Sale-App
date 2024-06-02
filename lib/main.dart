@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/screens/home_screen.dart';
 import 'helpers/sql_helper.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var sqlHelper = SqlHelper();
   await sqlHelper.createDatabase();
@@ -22,10 +22,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
-            backgroundColor: Color.fromRGBO(15, 87, 217, 1),
-          iconTheme: IconThemeData(
-              color: Colors.white
-          ),
+          backgroundColor: Color.fromRGBO(15, 87, 217, 1),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
       ),
       home: HomePage(),
