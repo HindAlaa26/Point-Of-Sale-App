@@ -4,7 +4,7 @@ import 'package:point_of_sales/screens/all_sales.dart';
 import 'package:point_of_sales/screens/category_screen/categories.dart';
 import 'package:point_of_sales/screens/clients.dart';
 import 'package:point_of_sales/screens/new_sale.dart';
-import 'package:point_of_sales/screens/products.dart';
+import 'package:point_of_sales/screens/product_screen/products.dart';
 import '../helpers/sql_helper.dart';
 import '../models/category_model.dart';
 

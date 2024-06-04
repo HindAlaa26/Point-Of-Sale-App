@@ -1,12 +1,11 @@
 import 'package:data_table_2/data_table_2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/screens/category_screen/category_operations.dart';
+import 'package:point_of_sales/shared_component/custom_table.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import '../../helpers/sql_helper.dart';
 import '../../models/category_model.dart';
-import '../../shared_component/page_data.dart';
 
 class Categories extends StatefulWidget {
   const Categories({
@@ -174,66 +173,41 @@ class _CategoriesState extends State<Categories> {
               },
             ),
           ),
-          Expanded(
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                iconTheme: const IconThemeData(color: Colors.black, size: 26),
-                textTheme: const TextTheme(
-                  caption: TextStyle(
-                      color: Color.fromRGBO(15, 87, 217, 1),
-                      fontSize: 20), // "Rows per page" text style
-                ),
+          DefaultTable(
+            index: 4,
+            columns: [
+              DataColumn(
+                label:
+                    Center(child: textInApp(text: 'Id', color: Colors.white)),
               ),
-              child: PaginatedDataTable2(
-                empty: Center(child: pageDataNotFound(index: 4)),
-                border: TableBorder.all(color: Colors.black),
-                headingRowColor: MaterialStateProperty.all(
-                    const Color.fromRGBO(15, 87, 217, 1)),
-                minWidth: 800,
-                rowsPerPage: 10,
-                renderEmptyRowsInTheEnd: false,
-                horizontalMargin: 10,
-                headingRowHeight: 60,
-                dataRowHeight: 100,
-                showFirstLastButtons: true,
-                fit: FlexFit.tight,
-                autoRowsToHeight: true,
-                columns: [
-                  DataColumn(
-                    label: Center(
-                        child: textInApp(text: 'Id', color: Colors.white)),
-                  ),
-                  DataColumn(
-                      label: Center(
-                          child: textInApp(text: "Name", color: Colors.white))),
-                  DataColumn(
-                      label: Center(
-                          child: textInApp(
-                              text: "Description", color: Colors.white))),
-                  DataColumn(
-                      label: Center(
-                          child:
-                              textInApp(text: "Actions", color: Colors.white))),
-                ],
-                source: DataSource(
-                  categories: categories,
-                  onDelete: (category) async {
-                    await deleteCategory(category: category);
-                  },
-                  onUpdate: (category) async {
-                    var result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (ctx) => CategoriesOperationScreen(
-                                  category: category,
-                                )));
+              DataColumn(
+                  label: Center(
+                      child: textInApp(text: "Name", color: Colors.white))),
+              DataColumn(
+                  label: Center(
+                      child:
+                          textInApp(text: "Description", color: Colors.white))),
+              DataColumn(
+                  label: Center(
+                      child: textInApp(text: "Actions", color: Colors.white))),
+            ],
+            dataSource: DataSource(
+              categories: categories,
+              onDelete: (category) async {
+                await deleteCategory(category: category);
+              },
+              onUpdate: (category) async {
+                var result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (ctx) => CategoriesOperationScreen(
+                              category: category,
+                            )));
 
-                    if (result ?? false) {
-                      getCategories();
-                    }
-                  },
-                ),
-              ),
+                if (result ?? false) {
+                  getCategories();
+                }
+              },
             ),
           ),
         ],

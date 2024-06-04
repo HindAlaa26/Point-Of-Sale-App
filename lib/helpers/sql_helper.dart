@@ -1,12 +1,9 @@
 import 'package:sqflite/sqflite.dart';
 
-class SqlHelper
-{
+class SqlHelper {
   Database? database;
-  Future<bool> createTable() async
-  {
-    try
-    {
+  Future<bool> createTable() async {
+    try {
       var batch = database!.batch();
       batch.execute("""
       Create table If not exists categories(
@@ -22,8 +19,10 @@ class SqlHelper
       price double,
       stock integer,
       isAvailable boolean,
-      image blob,
-      categoryId integer
+      image text,
+      categoryId integer,
+      foreign key(categoryId) references categories(id)
+      ON Delete restrict
       )""");
       batch.execute("""
       Create table If not exists clients(
@@ -36,20 +35,17 @@ class SqlHelper
       var result = await batch.commit();
       print("table created");
       return true;
-    }
-    catch(e)
-    {
+    } catch (e) {
       print('Error when creating table ${e.toString()}');
       return false;
     }
   }
 
-
-   Future<void> createDatabase()async {
-     database = await openDatabase(
+  Future<void> createDatabase() async {
+    database = await openDatabase(
       'POS.db',
       version: 1,
-      onCreate: (db, version)  {
+      onCreate: (db, version) {
         print("database created");
       },
       onOpen: (db) {
@@ -57,7 +53,4 @@ class SqlHelper
       },
     );
   }
-
-
-
 }
