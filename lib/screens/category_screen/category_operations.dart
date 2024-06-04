@@ -3,25 +3,30 @@ import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/shared_component/default_snackbar.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import 'package:sqflite/sqflite.dart';
-import '../helpers/sql_helper.dart';
-import '../models/category_model.dart';
-import '../shared_component/custom_button.dart';
-import '../shared_component/custom_textFormField.dart';
+import '../../helpers/sql_helper.dart';
+import '../../models/category_model.dart';
+import '../../shared_component/custom_button.dart';
+import '../../shared_component/custom_textFormField.dart';
 
 class CategoriesOperationScreen extends StatefulWidget {
   final Category? category;
-  final VoidCallback? onCategoryAdded;
-  const CategoriesOperationScreen(
-      {this.category, super.key, this.onCategoryAdded});
+  const CategoriesOperationScreen({this.category, super.key});
 
   @override
   State<CategoriesOperationScreen> createState() => _CategoriesOpsState();
 }
 
 class _CategoriesOpsState extends State<CategoriesOperationScreen> {
-  var nameController = TextEditingController();
-  var descriptionController = TextEditingController();
+  late TextEditingController nameController;
+  late TextEditingController descriptionController;
   var formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    nameController = TextEditingController(text: widget.category?.name ?? '');
+    descriptionController =
+        TextEditingController(text: widget.category?.description ?? '');
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,26 +78,41 @@ class _CategoriesOpsState extends State<CategoriesOperationScreen> {
     try {
       if (formKey.currentState!.validate()) {
         var sqlHelper = GetIt.I.get<SqlHelper>();
-        await sqlHelper.database!.insert(
-            'categories',
-            conflictAlgorithm: ConflictAlgorithm.replace,
-            {
-              'name': nameController.text,
-              'description': descriptionController.text,
-            });
+        if (widget.category == null) {
+          //add
+          await sqlHelper.database!.insert(
+              'categories',
+              conflictAlgorithm: ConflictAlgorithm.replace,
+              {
+                'name': nameController.text,
+                'description': descriptionController.text,
+              });
+        } else {
+          // update
+          await sqlHelper.database!.update(
+              'categories',
+              {
+                'name': nameController.text,
+                'description': descriptionController.text,
+              },
+              where: 'id =?',
+              whereArgs: [widget.category?.id]);
+        }
+
         defaultSnackBar(
             context: context,
-            text: "Category added Successfully",
+            text: widget.category == null
+                ? 'Category added Successfully'
+                : 'Category Updated Successfully',
             backgroundColor: Colors.green);
-        if (widget.onCategoryAdded != null) {
-          widget.onCategoryAdded!();
-        }
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       }
     } catch (error) {
       defaultSnackBar(
           context: context,
-          text: "Error when adding category",
+          text: widget.category == null
+              ? "Error when adding category"
+              : "Error when updating category",
           backgroundColor: Colors.red);
       print("Error when adding category : $error");
     }

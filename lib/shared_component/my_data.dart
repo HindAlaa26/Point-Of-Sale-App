@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/screens/all_sales.dart';
-import 'package:point_of_sales/screens/categories.dart';
+import 'package:point_of_sales/screens/category_screen/categories.dart';
 import 'package:point_of_sales/screens/clients.dart';
 import 'package:point_of_sales/screens/new_sale.dart';
 import 'package:point_of_sales/screens/products.dart';
@@ -41,14 +41,3 @@ List<Widget> screens = [
 
 bool isLoading = true;
 bool result = false;
-
-void deleteCategory(int id, Function getCategories) async {
-  try {
-    var sqlHelper = GetIt.I.get<SqlHelper>();
-    await sqlHelper.database!
-        .delete("categories", where: 'id = ?', whereArgs: [id]);
-    getCategories(); // Refresh the categories list
-  } catch (e) {
-    print('Error in deleting category $e');
-  }
-}
