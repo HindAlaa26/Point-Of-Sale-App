@@ -12,6 +12,7 @@ class DefaultTextFormField extends StatelessWidget {
     this.textInputAction = TextInputAction.next,
     this.inputFormatters,
     this.onSaved,
+    this.maxLength,
     required this.prefixIcon,
   });
   final TextEditingController controller;
@@ -22,6 +23,7 @@ class DefaultTextFormField extends StatelessWidget {
   final IconData prefixIcon;
   final void Function(String?)? onSaved;
   final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
   InputBorder get textFieldBorder => OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
       );
@@ -63,6 +65,7 @@ class DefaultTextFormField extends StatelessWidget {
             focusedBorder: textFieldBorder.copyWith(
                 borderSide: BorderSide(color: Colors.blue.shade900))),
         maxLines: null,
+        maxLength: maxLength,
       ),
     );
   }

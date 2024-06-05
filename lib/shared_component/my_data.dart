@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/screens/all_sales.dart';
 import 'package:point_of_sales/screens/category_screen/categories.dart';
-import 'package:point_of_sales/screens/clients.dart';
+import 'package:point_of_sales/screens/client_screens/clients.dart';
 import 'package:point_of_sales/screens/new_sale.dart';
 import 'package:point_of_sales/screens/product_screen/products.dart';
 import '../helpers/sql_helper.dart';
