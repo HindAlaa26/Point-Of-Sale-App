@@ -48,6 +48,124 @@ class _ProductsState extends State<Products> {
     }
   }
 
+  Future<void> deleteProduct({required Product product}) async {
+    try {
+      var dialogResult = await showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.info,
+                    color: Colors.blueGrey,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  textInApp(
+                      text: "Confirm",
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.bold),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textInApp(text: "Category Name : "),
+                  textInApp(text: " ${product.name}", color: Colors.blueGrey),
+                  textInApp(text: "Category description : "),
+                  textInApp(
+                      text: " ${product.description}", color: Colors.blueGrey),
+                  Row(
+                    children: [
+                      textInApp(text: "Category price : "),
+                      textInApp(
+                          text: " ${product.price}", color: Colors.blueGrey),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      textInApp(text: "Category stock : "),
+                      textInApp(
+                          text: " ${product.stock}", color: Colors.blueGrey),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      textInApp(text: "Category isAvailable : "),
+                      textInApp(
+                          text: " ${product.isAvailable}",
+                          color: Colors.blueGrey),
+                    ],
+                  ),
+                  textInApp(text: "Category image : "),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Image.network(
+                        height: 100,
+                        width: 100,
+                        product.image ?? "",
+                        errorBuilder: (context, error, stackTrace) => Column(
+                          children: [
+                            const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            ),
+                            textInApp(
+                                text: "Invalid Image", color: Colors.blueGrey)
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  textInApp(text: "Category Name : "),
+                  textInApp(
+                      text: " ${product.categoryName}", color: Colors.blueGrey),
+                  textInApp(text: "Category Description:"),
+                  textInApp(
+                      text: " ${product.categoryDescription}",
+                      color: Colors.blueGrey),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            );
+          });
+
+      if (dialogResult ?? false) {
+        var sqlHelper = GetIt.I.get<SqlHelper>();
+        await sqlHelper.database!
+            .delete("products", where: 'id = ?', whereArgs: [product.id]);
+        getProducts(); // Refresh the categories list
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('product deleted Successfully')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Error when deleting product ${product.name}')));
+      print('Error when deleting product $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,26 +207,38 @@ class _ProductsState extends State<Products> {
                   ),
                   prefixIcon: const Icon(Icons.search)),
               onChanged: (text) async {
-                // if (text == '') {
-                //   getProducts();
-                //   return;
-                // }
-                //
-                // var sqlHelper = GetIt.I.get<SqlHelper>();
-                // var data = await sqlHelper.database!.rawQuery("""
-                //       Select * from categories
-                //       where name like '%$text%' OR description like '%$text%'
-                //       """);
-                //
-                // if (data.isNotEmpty) {
-                //   product = [];
-                //   for (var item in data) {
-                //     products?.add(product.fromJson(item));
-                //   }
-                // } else {
-                //   categories = [];
-                // }
-                // setState(() {});
+                if (text == '') {
+                  getProducts();
+                  return;
+                }
+                // Convert 'true' and 'false' text to appropriate integer values for SQLite
+                String booleanCondition = "";
+                if (text.toLowerCase() == 'true') {
+                  booleanCondition = "OR P.isAvailable = 1";
+                } else if (text.toLowerCase() == 'false') {
+                  booleanCondition = "OR P.isAvailable = 0";
+                }
+                var sqlHelper = GetIt.I.get<SqlHelper>();
+                var data = await sqlHelper.database!.rawQuery("""
+                      Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+    Inner JOIN categories C
+    On P.categoryId = C.id
+                      where P.name like '%$text%' OR P.description like '%$text%' OR P.price like '%$text%'
+                      OR P.stock like '%$text%'
+                      $booleanCondition
+                      OR categoryName like '%$text%'
+                      OR categoryDescription like '%$text%'
+                      """);
+
+                if (data.isNotEmpty) {
+                  products = [];
+                  for (var item in data) {
+                    products?.add(Product.fromJson(item));
+                  }
+                } else {
+                  products = [];
+                }
+                setState(() {});
               },
             ),
           ),
@@ -179,8 +309,8 @@ class _ProductsState extends State<Products> {
             minWidth: 2000,
             dataSource: DataSource(
               products: products,
-              onDelete: (category) async {
-                // await deleteCategory(category: category);
+              onDelete: (product) async {
+                await deleteProduct(product: product);
               },
               onUpdate: (product) async {
                 var result = await Navigator.push(
@@ -224,7 +354,22 @@ class DataSource extends DataTableSource {
           DataCell(Center(child: textInApp(text: "${products?[index].stock}"))),
           DataCell(Center(
               child: textInApp(text: "${products?[index].isAvailable}"))),
-          DataCell(Center(child: Image.network(products?[index].image ?? " "))),
+          DataCell(Center(
+              child: Image.network(
+            products?[index].image ?? " ",
+            height: 75,
+            width: 100,
+            errorBuilder: (context, error, stackTrace) => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                ),
+                textInApp(text: "Invalid Image", color: Colors.blueGrey)
+              ],
+            ),
+          ))),
           DataCell(Center(
               child: textInApp(text: "${products?[index].categoryName}"))),
           DataCell(Center(

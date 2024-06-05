@@ -51,7 +51,7 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: textInApp(
-            text: widget.product == null ? 'Add New' : 'Edit Category',
+            text: widget.product == null ? 'Add New' : 'Edit Product',
             color: Colors.white),
       ),
       body: Padding(
@@ -92,6 +92,16 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                         imageController.text ?? "",
                         height: 100,
                         width: 300,
+                        errorBuilder: (context, error, stackTrace) => Column(
+                          children: [
+                            const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            ),
+                            textInApp(
+                                text: "Invalid Image", color: Colors.blueGrey)
+                          ],
+                        ),
                       )
                     : const SizedBox(),
                 Row(
@@ -157,6 +167,9 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                     onPressed: () async {
                       await onSubmit();
                     }),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),
@@ -185,21 +198,20 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                 'isAvailable': isAvailable ?? false,
               });
         } else {
-          // // update
-          // await sqlHelper.database!.update(
-          //     'products',
-          //     {
-          //       'name': nameController.text,
-          //       'description': descriptionController.text,
-          //       'price':
-          //       double.parse(priceController.text ?? '0.0'),
-          //       'stock': int.parse(stockController.text ?? '0'),
-          //       'image': imageController.text,
-          //       'categoryId': selectedCategoryId,
-          //       'isAvailable': isAvailable ?? false,
-          //     },
-          //     where: 'id =?',
-          //     whereArgs: [widget.product?.id]);
+          // update
+          await sqlHelper.database!.update(
+              'products',
+              {
+                'name': nameController.text,
+                'description': descriptionController.text,
+                'price': double.parse(priceController.text ?? '0.0'),
+                'stock': int.parse(stockController.text ?? '0'),
+                'image': imageController.text,
+                'categoryId': selectedCategoryId,
+                'isAvailable': isAvailable ?? false,
+              },
+              where: 'id =?',
+              whereArgs: [widget.product?.id]);
         }
 
         defaultSnackBar(
