@@ -6,7 +6,6 @@ import 'package:point_of_sales/models/product_model.dart';
 import 'package:point_of_sales/screens/product_screen/product_operations.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
-import '../../shared_component/page_data.dart';
 
 class Products extends StatefulWidget {
   const Products({super.key});
@@ -42,6 +41,7 @@ class _ProductsState extends State<Products> {
       } else {
         products = [];
       }
+      print("Product Data=================$data");
       setState(() {});
     } catch (e) {
       print('Error in get Products $e');

@@ -6,7 +6,6 @@ import 'package:point_of_sales/shared_component/default_snackbar.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../helpers/sql_helper.dart';
-import '../../models/category_model.dart';
 import '../../shared_component/categories_drop_down_button.dart';
 import '../../shared_component/custom_button.dart';
 import '../../shared_component/custom_textFormField.dart';
@@ -62,19 +61,19 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
             child: Column(
               children: [
                 DefaultTextFormField(
-                  label: 'Name',
+                  label: 'Product Name',
                   controller: nameController,
                   validatorText: 'Name',
                   prefixIcon: Icons.person,
                 ),
                 DefaultTextFormField(
-                  label: 'Description',
+                  label: 'Product Description',
                   prefixIcon: Icons.description,
                   controller: descriptionController,
                   validatorText: "Description",
                 ),
                 DefaultTextFormField(
-                    label: 'Image Url',
+                    label: 'Product Image Url',
                     prefixIcon: Icons.image,
                     controller: imageController,
                     validatorText: "Image Url",
@@ -85,8 +84,6 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                         print("===========================$showImage");
                       }
                     }),
-                //image link
-                // https://w7.pngwing.com/pngs/600/735/png-transparent-coffee-milk-milk-bottle-milk-thumbnail.png
                 showImage
                     ? Image.network(
                         imageController.text ?? "",
@@ -102,6 +99,15 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                                 text: "Invalid Image", color: Colors.blueGrey)
                           ],
                         ),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return const CircularProgressIndicator(
+                              color: Colors.amber,
+                            );
+                          }
+                        },
                       )
                     : const SizedBox(),
                 Row(
@@ -112,7 +118,7 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
                           ],
-                          label: 'Price',
+                          label: 'Product Price',
                           controller: priceController,
                           prefixIcon: Icons.attach_money_sharp,
                           validatorText: "price"),
@@ -145,12 +151,13 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      textInApp(text: 'is Product Available'),
+                      textInApp(
+                          text: 'Product Available (${isAvailable ?? "?"})'),
                       Switch(
                           value: isAvailable ?? false,
                           activeColor: const Color.fromRGBO(15, 87, 217, 1),
-                          inactiveThumbColor: Colors.grey,
-                          inactiveTrackColor: Colors.blueGrey,
+                          inactiveThumbColor: Colors.blueAccent,
+                          inactiveTrackColor: Colors.blue.shade200,
                           onChanged: (value) {
                             setState(() {
                               isAvailable = value;

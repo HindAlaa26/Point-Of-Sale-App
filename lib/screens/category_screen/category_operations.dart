@@ -44,7 +44,7 @@ class _CategoriesOpsState extends State<CategoriesOperationScreen> {
           child: Column(
             children: [
               DefaultTextFormField(
-                label: 'Name',
+                label: 'Category Name',
                 controller: nameController,
                 validatorText: 'Name',
                 prefixIcon: Icons.person,
@@ -53,7 +53,7 @@ class _CategoriesOpsState extends State<CategoriesOperationScreen> {
                 height: 40,
               ),
               DefaultTextFormField(
-                label: 'Description',
+                label: 'Category Description',
                 prefixIcon: Icons.description,
                 controller: descriptionController,
                 validatorText: "Description",
