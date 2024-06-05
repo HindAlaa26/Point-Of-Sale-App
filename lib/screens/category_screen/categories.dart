@@ -100,6 +100,9 @@ class _CategoriesState extends State<Categories> {
         await sqlHelper.database!
             .delete("categories", where: 'id = ?', whereArgs: [category.id]);
         getCategories(); // Refresh the categories list
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('category deleted Successfully')));
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
