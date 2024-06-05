@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/models/product_model.dart';
 import 'package:point_of_sales/shared_component/default_snackbar.dart';
+import 'package:point_of_sales/shared_component/drop_down_button.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../helpers/sql_helper.dart';
-import '../../shared_component/categories_drop_down_button.dart';
 import '../../shared_component/custom_button.dart';
 import '../../shared_component/custom_textFormField.dart';
 

@@ -1,10 +1,13 @@
 import 'package:data_table_2/data_table_2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/helpers/sql_helper.dart';
 import 'package:point_of_sales/models/product_model.dart';
 import 'package:point_of_sales/screens/product_screen/product_operations.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';
+import 'package:point_of_sales/shared_component/drop_down_button.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 
 class Products extends StatefulWidget {
@@ -21,6 +24,8 @@ class _ProductsState extends State<Products> {
     super.initState();
   }
 
+  bool sortAscend = false;
+  int? sortColumnIndex;
   List<Product>? products;
 
   getProducts() async {
@@ -41,7 +46,7 @@ class _ProductsState extends State<Products> {
       } else {
         products = [];
       }
-      print("Product Data=================$data");
+      // print("Product Data=================$data");
       setState(() {});
     } catch (e) {
       print('Error in get Products $e');
@@ -196,54 +201,74 @@ class _ProductsState extends State<Products> {
           //Search
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            child: TextField(
-              decoration: InputDecoration(
-                  label: textInApp(text: "Search"),
-                  enabledBorder: const OutlineInputBorder(),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(15, 87, 217, 1)),
-                  ),
-                  prefixIcon: const Icon(Icons.search)),
-              onChanged: (text) async {
-                if (text == '') {
-                  getProducts();
-                  return;
-                }
-                // Convert 'true' and 'false' text to appropriate integer values for SQLite
-                String booleanCondition = "";
-                if (text.toLowerCase() == 'true') {
-                  booleanCondition = "OR P.isAvailable = 1";
-                } else if (text.toLowerCase() == 'false') {
-                  booleanCondition = "OR P.isAvailable = 0";
-                }
-                var sqlHelper = GetIt.I.get<SqlHelper>();
-                var data = await sqlHelper.database!.rawQuery("""
-                      Select P.*,C.name as categoryName,C.description as categoryDescription from products P
-    Inner JOIN categories C
-    On P.categoryId = C.id
-                      where P.name like '%$text%' OR P.description like '%$text%' OR P.price like '%$text%'
-                      OR P.stock like '%$text%'
-                      $booleanCondition
-                      OR categoryName like '%$text%'
-                      OR categoryDescription like '%$text%'
-                      """);
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                        label: textInApp(text: "Search"),
+                        enabledBorder: const OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color.fromRGBO(15, 87, 217, 1)),
+                        ),
+                        prefixIcon: const Icon(Icons.search)),
+                    onChanged: (text) async {
+                      if (text == '') {
+                        getProducts();
+                        return;
+                      }
+                      // Convert 'true' and 'false' text to appropriate integer values for SQLite
+                      String booleanCondition = "";
+                      if (text.toLowerCase() == 'true') {
+                        booleanCondition = "OR P.isAvailable = 1";
+                      } else if (text.toLowerCase() == 'false') {
+                        booleanCondition = "OR P.isAvailable = 0";
+                      }
+                      var sqlHelper = GetIt.I.get<SqlHelper>();
+                      var data = await sqlHelper.database!.rawQuery("""
+                            Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                      Inner JOIN categories C
+                      On P.categoryId = C.id
+                            where P.name like '%$text%' OR P.description like '%$text%' OR P.price like '%$text%'
+                            OR P.stock like '%$text%'
+                            $booleanCondition
+                            OR categoryName like '%$text%'
+                            OR categoryDescription like '%$text%'
+                            """);
 
-                if (data.isNotEmpty) {
-                  products = [];
-                  for (var item in data) {
-                    products?.add(Product.fromJson(item));
-                  }
-                } else {
-                  products = [];
-                }
-                setState(() {});
-              },
+                      if (data.isNotEmpty) {
+                        products = [];
+                        for (var item in data) {
+                          products?.add(Product.fromJson(item));
+                        }
+                      } else {
+                        products = [];
+                      }
+                      setState(() {});
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                ProductDropDownButton(
+                  selectedValue: sortColumnIndex,
+                  onChanged: (int? value) {
+                    sortColumnIndex = value;
+                    sortAscend = true;
+                    print("value===================$value");
+                    setState(() {});
+                  },
+                ),
+              ],
             ),
           ),
           DefaultTable(
             index: 1,
+            sortColumnIndex: sortColumnIndex,
+            sortAscending: sortAscend,
             columns: [
               DataColumn(
                   label: Center(
@@ -264,17 +289,77 @@ class _ProductsState extends State<Products> {
                 color: Colors.white,
               ))),
               DataColumn(
+                  numeric: true,
+                  onSort: (columnIndex, ascending) {
+                    // if (sortColumnIndex == 3) {
+                    //   print(
+                    //       "sortColumnIndex===================$sortColumnIndex");
+                    //   sortAscend = ascending;
+                    //   setState(() {});
+                    //   if (ascending) {
+                    //     products!
+                    //         .sort((a, b) => a.price!.compareTo(b.price as num));
+                    //   } else {
+                    //     products!
+                    //         .sort((b, a) => a.price!.compareTo(b.price as num));
+                    //   }
+                    // }
+                    ////////////////
+                    if (sortColumnIndex == 3) {
+                      sortAscend = ascending;
+                      sortColumnIndex = 3;
+                      setState(() {});
+
+                      if (ascending) {
+                        products!
+                            .sort((a, b) => a.price!.compareTo(b.price as num));
+                      } else {
+                        products!
+                            .sort((b, a) => a.price!.compareTo(b.price as num));
+                      }
+                    }
+                  },
                   label: Center(
                       child: textInApp(
-                text: "Price",
-                color: Colors.white,
-              ))),
+                    text: "Price",
+                    color: Colors.white,
+                  ))),
               DataColumn(
+                  numeric: true,
+                  onSort: (columnIndex, ascending) {
+                    // if (sortColumnIndex == 3) {
+                    //   print(
+                    //       "sortColumnIndex===================$sortColumnIndex");
+                    //   sortAscend = ascending;
+                    //   setState(() {});
+                    //   if (ascending) {
+                    //     products!
+                    //         .sort((a, b) => a.price!.compareTo(b.price as num));
+                    //   } else {
+                    //     products!
+                    //         .sort((b, a) => a.price!.compareTo(b.price as num));
+                    //   }
+                    // }
+                    ///////////////////
+                    if (sortColumnIndex == 4) {
+                      sortAscend = ascending;
+                      sortColumnIndex = 4;
+                      setState(() {});
+
+                      if (ascending) {
+                        products!
+                            .sort((a, b) => a.stock!.compareTo(b.stock as num));
+                      } else {
+                        products!
+                            .sort((b, a) => a.stock!.compareTo(b.stock as num));
+                      }
+                    }
+                  },
                   label: Center(
                       child: textInApp(
-                text: "Stock",
-                color: Colors.white,
-              ))),
+                    text: "Stock",
+                    color: Colors.white,
+                  ))),
               DataColumn(
                   label: Center(
                       child: textInApp(

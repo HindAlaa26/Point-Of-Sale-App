@@ -5,12 +5,16 @@ import 'package:point_of_sales/shared_component/page_data.dart';
 class DefaultTable extends StatelessWidget {
   final List<DataColumn> columns;
   final DataTableSource dataSource;
+  final bool? sortAscending;
+  final int? sortColumnIndex;
   final double minWidth;
   final int index;
   const DefaultTable(
       {required this.columns,
       required this.dataSource,
       required this.index,
+      this.sortAscending,
+      this.sortColumnIndex,
       this.minWidth = 800,
       super.key});
 
@@ -33,6 +37,8 @@ class DefaultTable extends StatelessWidget {
               MaterialStateProperty.all(const Color.fromRGBO(15, 87, 217, 1)),
           minWidth: minWidth,
           rowsPerPage: 10,
+          sortAscending: sortAscending ?? false,
+          sortColumnIndex: sortColumnIndex,
           renderEmptyRowsInTheEnd: false,
           horizontalMargin: 10,
           headingRowHeight: 60,
