@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/screens/category_screen/category_operations.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';
+import 'package:point_of_sales/shared_component/drop_down_button.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import '../../helpers/sql_helper.dart';
 import '../../models/category_model.dart';
@@ -115,6 +116,8 @@ class _CategoriesState extends State<Categories> {
     }
   }
 
+  bool sortAscend = false;
+  int? sortColumnIndex;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,6 +145,23 @@ class _CategoriesState extends State<Categories> {
       ),
       body: Column(
         children: [
+          // sort
+          Padding(
+            padding: const EdgeInsets.only(top: 20, left: 10),
+            child: Row(
+              children: [
+                CategoriesSortDropDownButton(
+                  selectedValue: sortColumnIndex,
+                  onChanged: (int? value) {
+                    sortColumnIndex = value;
+                    sortAscend = true;
+                    print("value===================$value");
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+          ),
           //Search
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -179,14 +199,30 @@ class _CategoriesState extends State<Categories> {
               },
             ),
           ),
+
           DefaultTable(
             index: 4,
+            sortColumnIndex: sortColumnIndex,
+            sortAscending: sortAscend,
             columns: [
               DataColumn(
                 label:
                     Center(child: textInApp(text: 'Id', color: Colors.white)),
               ),
               DataColumn(
+                  onSort: (columnIndex, ascending) {
+                    if (sortColumnIndex == 1) {
+                      sortAscend = ascending;
+                      sortColumnIndex = 1;
+                      setState(() {});
+
+                      if (ascending) {
+                        categories!.sort((a, b) => a.name!.compareTo(b.name!));
+                      } else {
+                        categories!.sort((b, a) => a.name!.compareTo(b.name!));
+                      }
+                    }
+                  },
                   label: Center(
                       child: textInApp(text: "Name", color: Colors.white))),
               DataColumn(

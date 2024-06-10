@@ -2,6 +2,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';
+import 'package:point_of_sales/shared_component/drop_down_button.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import '../../helpers/sql_helper.dart';
 import '../../models/client_model.dart';
@@ -44,6 +45,9 @@ class _ClientsState extends State<Clients> {
       print('Error in get clients $e');
     }
   }
+
+  bool sortAscend = false;
+  int? sortColumnIndex;
 
   Future<void> deleteClient({required Client client}) async {
     try {
@@ -142,6 +146,23 @@ class _ClientsState extends State<Clients> {
       ),
       body: Column(
         children: [
+          // sort
+          Padding(
+            padding: const EdgeInsets.only(top: 20, left: 10),
+            child: Row(
+              children: [
+                ClientsSortDropDownButton(
+                  selectedValue: sortColumnIndex,
+                  onChanged: (int? value) {
+                    sortColumnIndex = value;
+                    sortAscend = true;
+                    print("value===================$value");
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+          ),
           //Search
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -183,12 +204,27 @@ class _ClientsState extends State<Clients> {
           ),
           DefaultTable(
             index: 2,
+            sortColumnIndex: sortColumnIndex,
+            sortAscending: sortAscend,
             columns: [
               DataColumn(
                 label:
                     Center(child: textInApp(text: 'Id', color: Colors.white)),
               ),
               DataColumn(
+                  onSort: (columnIndex, ascending) {
+                    if (sortColumnIndex == 1) {
+                      sortAscend = ascending;
+                      sortColumnIndex = 1;
+                      setState(() {});
+
+                      if (ascending) {
+                        clients!.sort((a, b) => a.name!.compareTo(b.name!));
+                      } else {
+                        clients!.sort((b, a) => a.name!.compareTo(b.name!));
+                      }
+                    }
+                  },
                   label: Center(
                       child: textInApp(text: "Name", color: Colors.white))),
               DataColumn(

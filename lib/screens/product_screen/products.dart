@@ -1,7 +1,5 @@
 import 'package:data_table_2/data_table_2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/helpers/sql_helper.dart';
 import 'package:point_of_sales/models/product_model.dart';
@@ -198,61 +196,11 @@ class _ProductsState extends State<Products> {
       ),
       body: Column(
         children: [
-          //Search
+          // sort
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
             child: Row(
               children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                        label: textInApp(text: "Search"),
-                        enabledBorder: const OutlineInputBorder(),
-                        border: const OutlineInputBorder(),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color.fromRGBO(15, 87, 217, 1)),
-                        ),
-                        prefixIcon: const Icon(Icons.search)),
-                    onChanged: (text) async {
-                      if (text == '') {
-                        getProducts();
-                        return;
-                      }
-                      // Convert 'true' and 'false' text to appropriate integer values for SQLite
-                      String booleanCondition = "";
-                      if (text.toLowerCase() == 'true') {
-                        booleanCondition = "OR P.isAvailable = 1";
-                      } else if (text.toLowerCase() == 'false') {
-                        booleanCondition = "OR P.isAvailable = 0";
-                      }
-                      var sqlHelper = GetIt.I.get<SqlHelper>();
-                      var data = await sqlHelper.database!.rawQuery("""
-                            Select P.*,C.name as categoryName,C.description as categoryDescription from products P
-                      Inner JOIN categories C
-                      On P.categoryId = C.id
-                            where P.name like '%$text%' OR P.description like '%$text%' OR P.price like '%$text%'
-                            OR P.stock like '%$text%'
-                            $booleanCondition
-                            OR categoryName like '%$text%'
-                            OR categoryDescription like '%$text%'
-                            """);
-
-                      if (data.isNotEmpty) {
-                        products = [];
-                        for (var item in data) {
-                          products?.add(Product.fromJson(item));
-                        }
-                      } else {
-                        products = [];
-                      }
-                      setState(() {});
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
                 ProductDropDownButton(
                   selectedValue: sortColumnIndex,
                   onChanged: (int? value) {
@@ -263,6 +211,55 @@ class _ProductsState extends State<Products> {
                   },
                 ),
               ],
+            ),
+          ),
+          //Search
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            child: TextField(
+              decoration: InputDecoration(
+                  label: textInApp(text: "Search"),
+                  enabledBorder: const OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromRGBO(15, 87, 217, 1)),
+                  ),
+                  prefixIcon: const Icon(Icons.search)),
+              onChanged: (text) async {
+                if (text == '') {
+                  getProducts();
+                  return;
+                }
+                // Convert 'true' and 'false' text to appropriate integer values for SQLite
+                String booleanCondition = "";
+                if (text.toLowerCase() == 'true') {
+                  booleanCondition = "OR P.isAvailable = 1";
+                } else if (text.toLowerCase() == 'false') {
+                  booleanCondition = "OR P.isAvailable = 0";
+                }
+                var sqlHelper = GetIt.I.get<SqlHelper>();
+                var data = await sqlHelper.database!.rawQuery("""
+                      Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                Inner JOIN categories C
+                On P.categoryId = C.id
+                      where P.name like '%$text%' OR P.description like '%$text%' OR P.price like '%$text%'
+                      OR P.stock like '%$text%'
+                      $booleanCondition
+                      OR categoryName like '%$text%'
+                      OR categoryDescription like '%$text%'
+                      """);
+
+                if (data.isNotEmpty) {
+                  products = [];
+                  for (var item in data) {
+                    products?.add(Product.fromJson(item));
+                  }
+                } else {
+                  products = [];
+                }
+                setState(() {});
+              },
             ),
           ),
           DefaultTable(

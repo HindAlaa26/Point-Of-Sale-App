@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:point_of_sales/screens/all_sales.dart';
+import 'package:point_of_sales/screens/sales_screen/all_sales.dart';
 import 'package:point_of_sales/screens/category_screen/categories.dart';
 import 'package:point_of_sales/screens/client_screens/clients.dart';
-import 'package:point_of_sales/screens/new_sale.dart';
 import 'package:point_of_sales/screens/product_screen/products.dart';
-import '../helpers/sql_helper.dart';
-import '../models/category_model.dart';
+import 'package:point_of_sales/screens/sales_screen/sales_screen.dart';
 
 List<String> cardTexts = [
   "All sales",
@@ -35,7 +32,7 @@ List<Widget> screens = [
   const AllSalesPage(),
   const Products(),
   const Clients(),
-  const NewSale(),
+  const SalesScreen(),
   const Categories()
 ];
 

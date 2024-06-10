@@ -30,7 +30,42 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      drawer: const Drawer(),
+      drawer: Drawer(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 80),
+          child: Column(
+            children: [
+              Container(
+                  color: const Color.fromRGBO(15, 87, 217, 1),
+                  width: double.infinity,
+                  child: ListTile(
+                    leading: textInApp(
+                        text: "Database BackUp",
+                        color: Colors.white,
+                        fontSize: 25),
+                    trailing: const Icon(
+                      Icons.backup,
+                      color: Colors.white,
+                    ),
+                  )),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                  color: const Color.fromRGBO(7, 60, 154, 1.0),
+                  width: double.infinity,
+                  child: ListTile(
+                    leading: textInApp(
+                        text: "About us", color: Colors.white, fontSize: 30),
+                    trailing: const Icon(
+                      Icons.group,
+                      color: Colors.white,
+                    ),
+                  )),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(),
       body: Column(
         children: [
