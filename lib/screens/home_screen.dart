@@ -16,6 +16,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     init();
+    fetchData();
     super.initState();
   }
 
@@ -24,6 +25,12 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  double todaySales = 0.0;
+  Future<void> fetchData() async {
+    todaySales = await GetIt.I.get<SqlHelper>().getTodaySales();
+    setState(() {});
   }
 
   @override
@@ -72,7 +79,7 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20),
             width: double.infinity,
-            height: 275,
+            height: 290,
             color: const Color.fromRGBO(15, 87, 217, 1),
             child: Column(
               children: [
@@ -113,7 +120,13 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 homeHeader(text1: "ExCharge rate", text2: "1 USD = 50 Egp "),
-                homeHeader(text1: "Today's sales ", text2: "1 USD = 1200 Egp "),
+                homeHeader(
+                    text1: "Today's sales ",
+                    text2: "$todaySales Egp ",
+                    onPressed: () {
+                      fetchData();
+                      setState(() {});
+                    }),
               ],
             ),
           ),

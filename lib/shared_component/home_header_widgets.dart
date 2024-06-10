@@ -4,6 +4,7 @@ import 'package:point_of_sales/shared_component/text_in_app.dart';
 Widget homeHeader({
   required String text1,
   required String text2,
+  void Function()? onPressed,
 }) {
   return Container(
     margin: const EdgeInsets.only(right: 10, top: 10, bottom: 10),
@@ -19,12 +20,22 @@ Widget homeHeader({
             child: textInApp(text: text1, color: Colors.white, fontSize: 25)),
         const Spacer(),
         Expanded(
-            flex: 4,
-            child: textInApp(
-                text: text2,
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.bold)),
+            flex: 5,
+            child: Row(
+              children: [
+                textInApp(
+                    text: text2,
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+                IconButton(
+                    onPressed: onPressed,
+                    icon: const Icon(
+                      Icons.refresh,
+                      color: Colors.white,
+                    ))
+              ],
+            )),
       ],
     ),
   );
