@@ -58,6 +58,13 @@ class SqlHelper {
       foreign key(productId) references products(id)
       ON Delete restrict
       )""");
+      batch.execute("""
+      Create table If not exists exChargeRate(
+      id integer primary key,
+      currencyFrom TEXT,
+      currencyTo TEXT,
+      rate REAL
+      )""");
       var result = await batch.commit();
       print("table created");
       print("table created Result : $result");
@@ -98,5 +105,33 @@ class SqlHelper {
     } else {
       return 0.0;
     }
+  }
+
+  Future<double> getExchangeRate(String from, String to) async {
+    try {
+      final result = await database?.query(
+        'exChargeRate',
+        where: 'currencyFrom = ? AND currencyTo = ?',
+        whereArgs: [from, to],
+      );
+      if (result != null && result.isNotEmpty) {
+        return result.first['rate'] as double;
+      } else {
+        return 1.0; // Default to 1.0 if no rate is found
+      }
+    } catch (e) {
+      print('Error fetching exchange rate: $e');
+      return 1.0; // Default to 1.0 in case of error
+    }
+  }
+
+  // Insert static data into exchangeRates table
+  Future<void> insertInitialData() async {
+    final db = database;
+    await db?.insert('exChargeRate', {
+      'currencyFrom': 'USD',
+      'currencyTo': 'EGP',
+      'rate': 50.0,
+    });
   }
 }

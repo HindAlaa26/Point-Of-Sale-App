@@ -5,37 +5,37 @@ Widget homeHeader({
   required String text1,
   required String text2,
   void Function()? onPressed,
+  bool? needFunction,
 }) {
   return Container(
     margin: const EdgeInsets.only(right: 10, top: 10, bottom: 10),
     padding: const EdgeInsets.all(15),
+    width: double.infinity,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(5),
       color: Colors.white38,
     ),
     child: Row(
       children: [
-        Expanded(
-            flex: 5,
-            child: textInApp(text: text1, color: Colors.white, fontSize: 25)),
+        textInApp(text: text1, color: Colors.white, fontSize: 25),
         const Spacer(),
-        Expanded(
-            flex: 5,
-            child: Row(
-              children: [
-                textInApp(
-                    text: text2,
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold),
-                IconButton(
+        Row(
+          children: [
+            textInApp(
+                text: text2,
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.bold),
+            needFunction == true
+                ? IconButton(
                     onPressed: onPressed,
                     icon: const Icon(
                       Icons.refresh,
                       color: Colors.white,
                     ))
-              ],
-            )),
+                : const SizedBox(),
+          ],
+        ),
       ],
     ),
   );

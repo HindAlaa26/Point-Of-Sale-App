@@ -17,11 +17,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     init();
     fetchData();
+
     super.initState();
   }
 
   void init() async {
     result = await GetIt.I.get<SqlHelper>().createTable();
+    await GetIt.I.get<SqlHelper>().insertInitialData();
+    await fetchExChargeRateData();
     setState(() {
       isLoading = false;
     });
@@ -30,6 +33,12 @@ class _HomePageState extends State<HomePage> {
   double todaySales = 0.0;
   Future<void> fetchData() async {
     todaySales = await GetIt.I.get<SqlHelper>().getTodaySales();
+    setState(() {});
+  }
+
+  double exchangeRate = 0.0;
+  Future<void> fetchExChargeRateData() async {
+    exchangeRate = await GetIt.I.get<SqlHelper>().getExchangeRate('USD', 'EGP');
     setState(() {});
   }
 
@@ -119,13 +128,16 @@ class _HomePageState extends State<HomePage> {
                           ),
                   ],
                 ),
-                homeHeader(text1: "ExCharge rate", text2: "1 USD = 50 Egp "),
+                homeHeader(
+                  text1: "ExCharge rate",
+                  text2: "1 USD = $exchangeRate EGP ",
+                ),
                 homeHeader(
                     text1: "Today's sales ",
                     text2: "$todaySales Egp ",
+                    needFunction: true,
                     onPressed: () {
                       fetchData();
-                      setState(() {});
                     }),
               ],
             ),
