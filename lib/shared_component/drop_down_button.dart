@@ -230,37 +230,33 @@ class _ProductDropDownButtonState extends State<ProductDropDownButton> {
               color: Colors.amber,
             ),
           )
-        : (products?.isEmpty ?? false)
-            ? Center(
-                child: textInApp(text: 'No products Found'),
-              )
-            : Container(
-                width: 130,
-                height: 60,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
+        : Container(
+            width: 130,
+            height: 60,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: DropdownButton(
+                padding: const EdgeInsets.all(10),
+                value: widget.selectedValue,
+                isExpanded: true,
+                underline: const SizedBox(),
+                hint: textInApp(text: 'sort by'),
+                items: [
+                  DropdownMenuItem(
+                    value: 3,
+                    child: textInApp(text: "price"),
                   ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: DropdownButton(
-                    padding: const EdgeInsets.all(10),
-                    value: widget.selectedValue,
-                    isExpanded: true,
-                    underline: const SizedBox(),
-                    hint: textInApp(text: 'sort by'),
-                    items: [
-                      DropdownMenuItem(
-                        value: 3,
-                        child: textInApp(text: "price"),
-                      ),
-                      DropdownMenuItem(
-                        value: 4,
-                        child: textInApp(text: "stock"),
-                      ),
-                    ],
-                    onChanged: widget.onChanged),
-              );
+                  DropdownMenuItem(
+                    value: 4,
+                    child: textInApp(text: "stock"),
+                  ),
+                ],
+                onChanged: widget.onChanged),
+          );
   }
 }
 
@@ -400,36 +396,32 @@ class _CategoriesSortDropDownButtonState
               color: Colors.amber,
             ),
           )
-        : (categories?.isEmpty ?? false)
-            ? Center(
-                child: textInApp(text: 'No category Found'),
-              )
-            : Container(
-                width: 130,
-                height: 60,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
+        : Container(
+            width: 130,
+            height: 60,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: DropdownButton(
+                padding: const EdgeInsets.all(10),
+                value: widget.selectedValue,
+                isExpanded: true,
+                underline: const SizedBox(),
+                hint: textInApp(text: 'sort by'),
+                items: [
+                  DropdownMenuItem(
+                    value: 1,
+                    child: textInApp(
+                        text: "name",
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold),
                   ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: DropdownButton(
-                    padding: const EdgeInsets.all(10),
-                    value: widget.selectedValue,
-                    isExpanded: true,
-                    underline: const SizedBox(),
-                    hint: textInApp(text: 'sort by'),
-                    items: [
-                      DropdownMenuItem(
-                        value: 1,
-                        child: textInApp(
-                            text: "name",
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                    onChanged: widget.onChanged),
-              );
+                ],
+                onChanged: widget.onChanged),
+          );
   }
 }
 
@@ -480,35 +472,31 @@ class _ClientsSortDropDownButtonState extends State<ClientsSortDropDownButton> {
               color: Colors.amber,
             ),
           )
-        : (clients?.isEmpty ?? false)
-            ? Center(
-                child: textInApp(text: 'No client Found'),
-              )
-            : Container(
-                width: 130,
-                height: 60,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
+        : Container(
+            width: 130,
+            height: 60,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: DropdownButton(
+                padding: const EdgeInsets.all(10),
+                value: widget.selectedValue,
+                isExpanded: true,
+                underline: const SizedBox(),
+                hint: textInApp(text: 'sort by'),
+                items: [
+                  DropdownMenuItem(
+                    value: 1,
+                    child: textInApp(
+                        text: "name",
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold),
                   ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: DropdownButton(
-                    padding: const EdgeInsets.all(10),
-                    value: widget.selectedValue,
-                    isExpanded: true,
-                    underline: const SizedBox(),
-                    hint: textInApp(text: 'sort by'),
-                    items: [
-                      DropdownMenuItem(
-                        value: 1,
-                        child: textInApp(
-                            text: "name",
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                    onChanged: widget.onChanged),
-              );
+                ],
+                onChanged: widget.onChanged),
+          );
   }
 }

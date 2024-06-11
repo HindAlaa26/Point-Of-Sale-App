@@ -101,8 +101,8 @@ class _CategoriesState extends State<Categories> {
         var sqlHelper = GetIt.I.get<SqlHelper>();
         await sqlHelper.database!
             .delete("categories", where: 'id = ?', whereArgs: [category.id]);
-        await sqlHelper.database!.delete("products",
-            where: 'categoryId = ?', whereArgs: [category.id]);
+        // await sqlHelper.database!.delete("products",
+        //     where: 'categoryId = ?', whereArgs: [category.id]);
         getCategories(); // Refresh the categories list
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.green,
@@ -112,6 +112,53 @@ class _CategoriesState extends State<Categories> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.red,
           content: Text('Error when deleting category ${category.name}')));
+      await showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.info,
+                    color: Colors.blueGrey,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  textInApp(
+                      text: "Error",
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.bold),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textInApp(
+                      text:
+                          "There is some products related to this category, please delete these products first",
+                      color: Colors.blue.shade700),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: const Text('Ok'),
+                ),
+              ],
+            );
+          });
       print('Error when deleting category $e');
     }
   }

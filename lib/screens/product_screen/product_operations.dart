@@ -28,7 +28,6 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
   bool? isAvailable;
   bool showImage = false;
   var formKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     nameController = TextEditingController(text: widget.product?.name ?? '');
@@ -187,8 +186,7 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
 
   Future<void> onSubmit() async {
     try {
-      if (formKey.currentState!.validate()) {
-        setState(() {});
+      if (formKey.currentState!.validate() && selectedCategoryId != null) {
         var sqlHelper = GetIt.I.get<SqlHelper>();
         if (widget.product == null) {
           //add

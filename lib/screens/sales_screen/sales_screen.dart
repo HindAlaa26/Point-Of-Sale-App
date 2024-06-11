@@ -443,7 +443,14 @@ class _SalesScreenState extends State<SalesScreen> {
         );
         return;
       }
-
+      if (selectedClientId == null) {
+        defaultSnackBar(
+          text: 'You Must Add Client',
+          backgroundColor: Colors.red,
+          context: context,
+        );
+        return;
+      }
       var sqlHelper = GetIt.I.get<SqlHelper>();
       if (widget.order == null) {
         // Add new order
