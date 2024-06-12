@@ -1,9 +1,12 @@
 import 'package:data_table_2/data_table_2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/screens/category_screen/category_operations.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';
+import 'package:point_of_sales/shared_component/default_snackbar.dart';
 import 'package:point_of_sales/shared_component/drop_down_button.dart';
+import 'package:point_of_sales/shared_component/filter_widget.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import '../../helpers/sql_helper.dart';
 import '../../models/category_model.dart';
@@ -165,6 +168,35 @@ class _CategoriesState extends State<Categories> {
 
   bool sortAscend = false;
   int? sortColumnIndex;
+
+  var nameController = TextEditingController();
+
+  Future<void> filterByName() async {
+    String? name = nameController.text;
+    if (name.isEmpty) {
+      defaultSnackBar(
+          text: 'Please enter a valid name',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                          Select * from categories 
+                      where name == ?                   
+                        """, [name]);
+
+    if (data.isNotEmpty) {
+      categories = [];
+      for (var item in data) {
+        categories?.add(Category.fromJson(item));
+      }
+    } else {
+      categories = [];
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -192,11 +224,51 @@ class _CategoriesState extends State<Categories> {
       ),
       body: Column(
         children: [
-          // sort
           Padding(
-            padding: const EdgeInsets.only(top: 20, left: 10),
+            padding:
+                const EdgeInsets.only(top: 20, left: 5, bottom: 10, right: 10),
             child: Row(
               children: [
+                //Search
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                        label: textInApp(text: "Search"),
+                        enabledBorder: const OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color.fromRGBO(15, 87, 217, 1)),
+                        ),
+                        prefixIcon: const Icon(Icons.search)),
+                    onChanged: (text) async {
+                      if (text == '') {
+                        getCategories();
+                        return;
+                      }
+
+                      var sqlHelper = GetIt.I.get<SqlHelper>();
+                      var data = await sqlHelper.database!.rawQuery("""
+                        Select * from categories 
+                        where name like '%$text%' OR description like '%$text%'
+                        """);
+
+                      if (data.isNotEmpty) {
+                        categories = [];
+                        for (var item in data) {
+                          categories?.add(Category.fromJson(item));
+                        }
+                      } else {
+                        categories = [];
+                      }
+                      setState(() {});
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                // sort
                 CategoriesSortDropDownButton(
                   selectedValue: sortColumnIndex,
                   onChanged: (int? value) {
@@ -206,47 +278,74 @@ class _CategoriesState extends State<Categories> {
                     setState(() {});
                   },
                 ),
+                //filter
+                MaterialButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  textInApp(
+                                      text: "Filter According To :",
+                                      fontSize: 25,
+                                      color: Colors.blueGrey),
+                                ],
+                              ),
+                              filterData(
+                                  text: "Name",
+                                  controller: nameController,
+                                  keyboardType: TextInputType.name,
+                                  isNumeric: false),
+                              Center(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blueGrey),
+                                  onPressed: () {
+                                    if (nameController.text.isNotEmpty) {
+                                      filterByName();
+                                      nameController.clear();
+                                      Navigator.pop(context);
+                                    } else {
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                                  child: textInApp(
+                                      text: "Apply Filters",
+                                      color: Colors.white),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  padding: const EdgeInsets.only(top: 1),
+                  minWidth: 0,
+                  child: const Icon(
+                    Icons.filter_list_sharp,
+                    color: Colors.blueGrey,
+                    size: 35,
+                  ),
+                ),
               ],
             ),
           ),
-          //Search
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            child: TextField(
-              decoration: InputDecoration(
-                  label: textInApp(text: "Search"),
-                  enabledBorder: const OutlineInputBorder(),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(15, 87, 217, 1)),
-                  ),
-                  prefixIcon: const Icon(Icons.search)),
-              onChanged: (text) async {
-                if (text == '') {
-                  getCategories();
-                  return;
-                }
-
-                var sqlHelper = GetIt.I.get<SqlHelper>();
-                var data = await sqlHelper.database!.rawQuery("""
-                      Select * from categories 
-                      where name like '%$text%' OR description like '%$text%'
-                      """);
-
-                if (data.isNotEmpty) {
-                  categories = [];
-                  for (var item in data) {
-                    categories?.add(Category.fromJson(item));
-                  }
-                } else {
-                  categories = [];
-                }
-                setState(() {});
-              },
-            ),
-          ),
-
           DefaultTable(
             index: 4,
             sortColumnIndex: sortColumnIndex,
