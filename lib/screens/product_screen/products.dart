@@ -383,7 +383,7 @@ class _ProductsState extends State<Products> {
               Expanded(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
                   child: TextField(
                     decoration: InputDecoration(
                         label: textInApp(text: "Search"),
@@ -483,21 +483,24 @@ class _ProductsState extends State<Products> {
                                     // price Greater than
                                     filterData(
                                         text: "Price Greater than",
-                                        controller: priceGreaterThanController),
+                                        controller: priceGreaterThanController,
+                                        isNumeric: true),
                                     const SizedBox(
                                       height: 20,
                                     ),
                                     // price less than
                                     filterData(
                                         text: "Price Less than",
-                                        controller: priceLessThanController),
+                                        controller: priceLessThanController,
+                                        isNumeric: true),
                                     const SizedBox(
                                       height: 20,
                                     ),
                                     // price equal
                                     filterData(
                                         text: "Price Equal than",
-                                        controller: priceEqualToController),
+                                        controller: priceEqualToController,
+                                        isNumeric: true),
                                     const SizedBox(
                                       height: 20,
                                     ),
@@ -505,21 +508,24 @@ class _ProductsState extends State<Products> {
                                     // stock Greater than
                                     filterData(
                                         text: "Stock Greater than",
-                                        controller: stockGreaterThanController),
+                                        controller: stockGreaterThanController,
+                                        isNumeric: true),
                                     const SizedBox(
                                       height: 20,
                                     ),
                                     // stock less than
                                     filterData(
                                         text: "Stock Less than",
-                                        controller: stockLessThanController),
+                                        controller: stockLessThanController,
+                                        isNumeric: true),
                                     const SizedBox(
                                       height: 20,
                                     ),
                                     // stock equal
                                     filterData(
                                         text: "Stock Equal than",
-                                        controller: stockEqualToController),
+                                        controller: stockEqualToController,
+                                        isNumeric: true),
                                   ],
                                 ),
                               ),

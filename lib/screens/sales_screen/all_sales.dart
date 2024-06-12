@@ -432,7 +432,8 @@ class _AllSalesPageState extends State<AllSalesPage> {
                                       filterData(
                                           text: "Total Price Greater than",
                                           controller:
-                                              totalPriceGreaterThanController),
+                                              totalPriceGreaterThanController,
+                                          isNumeric: true),
                                       const SizedBox(
                                         height: 20,
                                       ),
@@ -440,7 +441,8 @@ class _AllSalesPageState extends State<AllSalesPage> {
                                       filterData(
                                           text: "Total Price Less than",
                                           controller:
-                                              totalPriceLessThanController),
+                                              totalPriceLessThanController,
+                                          isNumeric: true),
                                       const SizedBox(
                                         height: 20,
                                       ),
@@ -448,7 +450,8 @@ class _AllSalesPageState extends State<AllSalesPage> {
                                       filterData(
                                           text: "Total Price Equal than",
                                           controller:
-                                              totalPriceEqualToController),
+                                              totalPriceEqualToController,
+                                          isNumeric: true),
                                       const SizedBox(
                                         height: 20,
                                       ),
@@ -457,7 +460,8 @@ class _AllSalesPageState extends State<AllSalesPage> {
                                       filterData(
                                           text: "Discount Greater than",
                                           controller:
-                                              discountGreaterThanController),
+                                              discountGreaterThanController,
+                                          isNumeric: true),
                                       const SizedBox(
                                         height: 20,
                                       ),
@@ -465,15 +469,16 @@ class _AllSalesPageState extends State<AllSalesPage> {
                                       filterData(
                                           text: "Discount Less than",
                                           controller:
-                                              discountLessThanController),
+                                              discountLessThanController,
+                                          isNumeric: true),
                                       const SizedBox(
                                         height: 20,
                                       ),
                                       // discount equal
                                       filterData(
                                           text: "Discount Equal than",
-                                          controller:
-                                              discountEqualToController),
+                                          controller: discountEqualToController,
+                                          isNumeric: true),
                                     ],
                                   ),
                                 ),
