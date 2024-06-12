@@ -231,8 +231,8 @@ class _ProductDropDownButtonState extends State<ProductDropDownButton> {
             ),
           )
         : Container(
-            width: 130,
-            height: 60,
+            width: 120,
+            height: 62,
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.black,
@@ -244,15 +244,22 @@ class _ProductDropDownButtonState extends State<ProductDropDownButton> {
                 value: widget.selectedValue,
                 isExpanded: true,
                 underline: const SizedBox(),
-                hint: textInApp(text: 'sort by'),
+                hint: Center(child: textInApp(text: 'sort by', fontSize: 20)),
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  size: 30,
+                  color: Colors.blueGrey,
+                ),
                 items: [
                   DropdownMenuItem(
                     value: 3,
-                    child: textInApp(text: "price"),
+                    child:
+                        Center(child: textInApp(text: "price", fontSize: 20)),
                   ),
                   DropdownMenuItem(
                     value: 4,
-                    child: textInApp(text: "stock"),
+                    child:
+                        Center(child: textInApp(text: "stock", fontSize: 20)),
                   ),
                 ],
                 onChanged: widget.onChanged),

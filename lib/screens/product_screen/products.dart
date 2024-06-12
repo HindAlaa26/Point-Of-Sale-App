@@ -1,10 +1,12 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/helpers/sql_helper.dart';
 import 'package:point_of_sales/models/product_model.dart';
 import 'package:point_of_sales/screens/product_screen/product_operations.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';
+import 'package:point_of_sales/shared_component/default_snackbar.dart';
 import 'package:point_of_sales/shared_component/drop_down_button.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 
@@ -43,6 +45,7 @@ class _ProductsState extends State<Products> {
         }
       } else {
         products = [];
+        print("No products found.");
       }
       // print("Product Data=================$data");
       setState(() {});
@@ -169,6 +172,186 @@ class _ProductsState extends State<Products> {
     }
   }
 
+  var priceGreaterThanController = TextEditingController();
+  var priceLessThanController = TextEditingController();
+  var priceEqualToController = TextEditingController();
+
+  Future<void> filterByPriceGreaterThan() async {
+    double? price =
+        double.tryParse(priceGreaterThanController.text); // Add this line
+    if (price == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid price',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                        Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                  Inner JOIN categories C
+                  On P.categoryId = C.id
+                        where P.price > ?
+                        """, [price]); // Modified this line
+
+    if (data.isNotEmpty) {
+      products = [];
+      for (var item in data) {
+        products?.add(Product.fromJson(item));
+      }
+    } else {
+      products = [];
+    }
+    setState(() {});
+  }
+
+  Future<void> filterByPriceLessThan() async {
+    double? price =
+        double.tryParse(priceLessThanController.text); // Add this line
+    if (price == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid price',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                        Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                  Inner JOIN categories C
+                  On P.categoryId = C.id
+                        where P.price < ?
+                        """, [price]); // Modified this line
+
+    if (data.isNotEmpty) {
+      products = [];
+      for (var item in data) {
+        products?.add(Product.fromJson(item));
+      }
+    } else {
+      products = [];
+    }
+    setState(() {});
+  }
+
+  Future<void> filterByPriceEqualToThan() async {
+    double? price = double.tryParse(priceEqualToController.text);
+    if (price == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid price',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                        Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                  Inner JOIN categories C
+                  On P.categoryId = C.id
+                        where P.price == ?
+                        """, [price]); // Modified this line
+
+    if (data.isNotEmpty) {
+      products = [];
+      for (var item in data) {
+        products?.add(Product.fromJson(item));
+      }
+    } else {
+      products = [];
+    }
+    setState(() {});
+  }
+
+  var stockGreaterThanController = TextEditingController();
+  var stockLessThanController = TextEditingController();
+  var stockEqualToController = TextEditingController();
+
+  Future<void> filterByStockGreaterThan() async {
+    double? stock =
+        double.tryParse(stockGreaterThanController.text); // Add this line
+    if (stock == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid stock number',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                        Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                  Inner JOIN categories C
+                  On P.categoryId = C.id
+                        where P.stock > ?
+                        """, [stock]); // Modified this line
+
+    if (data.isNotEmpty) {
+      products = [];
+      for (var item in data) {
+        products?.add(Product.fromJson(item));
+      }
+    } else {
+      products = [];
+    }
+    setState(() {});
+  }
+
+  Future<void> filterByStockLessThan() async {
+    double? stock =
+        double.tryParse(stockLessThanController.text); // Add this line
+    if (stock == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid stock number',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                        Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                  Inner JOIN categories C
+                  On P.categoryId = C.id
+                        where P.stock < ?
+                        """, [stock]); // Modified this line
+
+    if (data.isNotEmpty) {
+      products = [];
+      for (var item in data) {
+        products?.add(Product.fromJson(item));
+      }
+    } else {
+      products = [];
+    }
+    setState(() {});
+  }
+
+  Future<void> filterByStockEqualToThan() async {
+    double? stock = double.tryParse(stockEqualToController.text);
+    if (stock == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid stock number',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                        Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                  Inner JOIN categories C
+                  On P.categoryId = C.id
+                        where P.stock == ?
+                        """, [stock]); // Modified this line
+
+    if (data.isNotEmpty) {
+      products = [];
+      for (var item in data) {
+        products?.add(Product.fromJson(item));
+      }
+    } else {
+      products = [];
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -196,72 +379,223 @@ class _ProductsState extends State<Products> {
       ),
       body: Column(
         children: [
-          // sort
-          Padding(
-            padding: const EdgeInsets.only(left: 10, top: 20, right: 10),
-            child: Row(
-              children: [
-                ProductDropDownButton(
-                  selectedValue: sortColumnIndex,
-                  onChanged: (int? value) {
-                    sortColumnIndex = value;
-                    sortAscend = true;
-                    print("value===================$value");
-                    setState(() {});
-                  },
-                ),
-              ],
-            ),
-          ),
-          //Search
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            child: TextField(
-              decoration: InputDecoration(
-                  label: textInApp(text: "Search"),
-                  enabledBorder: const OutlineInputBorder(),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(15, 87, 217, 1)),
-                  ),
-                  prefixIcon: const Icon(Icons.search)),
-              onChanged: (text) async {
-                if (text == '') {
-                  getProducts();
-                  return;
-                }
-                // Convert 'true' and 'false' text to appropriate integer values for SQLite
-                String booleanCondition = "";
-                if (text.toLowerCase() == 'true') {
-                  booleanCondition = "OR P.isAvailable = 1";
-                } else if (text.toLowerCase() == 'false') {
-                  booleanCondition = "OR P.isAvailable = 0";
-                }
-                var sqlHelper = GetIt.I.get<SqlHelper>();
-                var data = await sqlHelper.database!.rawQuery("""
-                      Select P.*,C.name as categoryName,C.description as categoryDescription from products P
-                Inner JOIN categories C
-                On P.categoryId = C.id
-                      where P.name like '%$text%' OR P.description like '%$text%' OR P.price like '%$text%'
-                      OR P.stock like '%$text%'
-                      $booleanCondition
-                      OR categoryName like '%$text%'
-                      OR categoryDescription like '%$text%'
-                      """);
+          // sort && filters
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //Search
+              Expanded(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 20),
+                  child: TextField(
+                    decoration: InputDecoration(
+                        label: textInApp(text: "Search"),
+                        enabledBorder: const OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color.fromRGBO(15, 87, 217, 1)),
+                        ),
+                        prefixIcon: const Icon(Icons.search)),
+                    onChanged: (text) async {
+                      if (text == '') {
+                        getProducts();
+                        return;
+                      }
+                      // Convert 'true' and 'false' text to appropriate integer values for SQLite
+                      String booleanCondition = "";
+                      if (text.toLowerCase() == 'true') {
+                        booleanCondition = "OR P.isAvailable = 1";
+                      } else if (text.toLowerCase() == 'false') {
+                        booleanCondition = "OR P.isAvailable = 0";
+                      }
+                      var sqlHelper = GetIt.I.get<SqlHelper>();
+                      var data = await sqlHelper.database!.rawQuery("""
+                        Select P.*,C.name as categoryName,C.description as categoryDescription from products P
+                  Inner JOIN categories C
+                  On P.categoryId = C.id
+                        where P.name like '%$text%' OR P.description like '%$text%' OR P.price like '%$text%'
+                        OR P.stock like '%$text%'
+                        $booleanCondition
+                        OR categoryName like '%$text%'
+                        OR categoryDescription like '%$text%'
+                        """);
 
-                if (data.isNotEmpty) {
-                  products = [];
-                  for (var item in data) {
-                    products?.add(Product.fromJson(item));
-                  }
-                } else {
-                  products = [];
-                }
-                setState(() {});
-              },
-            ),
+                      if (data.isNotEmpty) {
+                        products = [];
+                        for (var item in data) {
+                          products?.add(Product.fromJson(item));
+                        }
+                      } else {
+                        products = [];
+                      }
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ),
+              //sort
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Row(
+                  children: [
+                    ProductDropDownButton(
+                      selectedValue: sortColumnIndex,
+                      onChanged: (int? value) {
+                        sortColumnIndex = value;
+                        sortAscend = true;
+                        print("value===================$value");
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              //filters
+              MaterialButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                textInApp(
+                                    text: "Filter According To :",
+                                    fontSize: 25,
+                                    color: Colors.blueGrey),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    // price Greater than
+                                    filterData(
+                                        text: "Price Greater than",
+                                        controller: priceGreaterThanController),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    // price less than
+                                    filterData(
+                                        text: "Price Less than",
+                                        controller: priceLessThanController),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    // price equal
+                                    filterData(
+                                        text: "Price Equal than",
+                                        controller: priceEqualToController),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    //////////////////////stock///////////////////////
+                                    // stock Greater than
+                                    filterData(
+                                        text: "Stock Greater than",
+                                        controller: stockGreaterThanController),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    // stock less than
+                                    filterData(
+                                        text: "Stock Less than",
+                                        controller: stockLessThanController),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    // stock equal
+                                    filterData(
+                                        text: "Stock Equal than",
+                                        controller: stockEqualToController),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Center(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blueGrey),
+                                onPressed: () {
+                                  if (priceGreaterThanController
+                                      .text.isNotEmpty) {
+                                    filterByPriceGreaterThan();
+                                    priceGreaterThanController.clear();
+                                    Navigator.pop(context);
+                                  } else if (priceLessThanController
+                                      .text.isNotEmpty) {
+                                    filterByPriceLessThan();
+                                    priceLessThanController.clear();
+                                    Navigator.pop(context);
+                                  } else if (priceEqualToController
+                                      .text.isNotEmpty) {
+                                    filterByPriceEqualToThan();
+                                    priceEqualToController.clear();
+                                    Navigator.pop(context);
+                                  }
+                                  ///////// stock //////////////////
+                                  else if (stockGreaterThanController
+                                      .text.isNotEmpty) {
+                                    filterByStockGreaterThan();
+                                    stockGreaterThanController.clear();
+                                    Navigator.pop(context);
+                                  } else if (stockLessThanController
+                                      .text.isNotEmpty) {
+                                    filterByStockLessThan();
+                                    stockLessThanController.clear();
+                                    Navigator.pop(context);
+                                  } else if (stockEqualToController
+                                      .text.isNotEmpty) {
+                                    filterByStockEqualToThan();
+                                    stockEqualToController.clear();
+                                    Navigator.pop(context);
+                                  } else {
+                                    Navigator.pop(context);
+                                  }
+                                },
+                                child: textInApp(
+                                    text: "Apply Filters", color: Colors.white),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                padding: const EdgeInsets.only(top: 30),
+                minWidth: 0,
+                child: const Icon(
+                  Icons.filter_list_sharp,
+                  color: Colors.blueGrey,
+                  size: 35,
+                ),
+              ),
+            ],
           ),
+
           DefaultTable(
             index: 1,
             sortColumnIndex: sortColumnIndex,
@@ -288,20 +622,6 @@ class _ProductsState extends State<Products> {
               DataColumn(
                   numeric: true,
                   onSort: (columnIndex, ascending) {
-                    // if (sortColumnIndex == 3) {
-                    //   print(
-                    //       "sortColumnIndex===================$sortColumnIndex");
-                    //   sortAscend = ascending;
-                    //   setState(() {});
-                    //   if (ascending) {
-                    //     products!
-                    //         .sort((a, b) => a.price!.compareTo(b.price as num));
-                    //   } else {
-                    //     products!
-                    //         .sort((b, a) => a.price!.compareTo(b.price as num));
-                    //   }
-                    // }
-                    ////////////////
                     if (sortColumnIndex == 3) {
                       sortAscend = ascending;
                       sortColumnIndex = 3;
@@ -324,20 +644,6 @@ class _ProductsState extends State<Products> {
               DataColumn(
                   numeric: true,
                   onSort: (columnIndex, ascending) {
-                    // if (sortColumnIndex == 3) {
-                    //   print(
-                    //       "sortColumnIndex===================$sortColumnIndex");
-                    //   sortAscend = ascending;
-                    //   setState(() {});
-                    //   if (ascending) {
-                    //     products!
-                    //         .sort((a, b) => a.price!.compareTo(b.price as num));
-                    //   } else {
-                    //     products!
-                    //         .sort((b, a) => a.price!.compareTo(b.price as num));
-                    //   }
-                    // }
-                    ///////////////////
                     if (sortColumnIndex == 4) {
                       sortAscend = ascending;
                       sortColumnIndex = 4;
@@ -488,4 +794,31 @@ class DataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+}
+
+Widget filterData(
+    {required String text, required TextEditingController controller}) {
+  return Row(
+    children: [
+      textInApp(text: text, fontSize: 25),
+      const SizedBox(
+        width: 30,
+      ),
+      Expanded(
+        child: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(
+        width: 50,
+      ),
+    ],
+  );
 }

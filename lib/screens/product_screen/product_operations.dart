@@ -200,7 +200,7 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                 'stock': int.parse(stockController.text ?? '0'),
                 'image': imageController.text,
                 'categoryId': selectedCategoryId,
-                'isAvailable': isAvailable ?? false,
+                'isAvailable': isAvailable! ? 1 : 0,
               });
         } else {
           // update
@@ -213,7 +213,7 @@ class _CategoriesOpsState extends State<ProductsOperationScreen> {
                 'stock': int.parse(stockController.text ?? '0'),
                 'image': imageController.text,
                 'categoryId': selectedCategoryId,
-                'isAvailable': isAvailable ?? false,
+                'isAvailable': isAvailable! ? 1 : 0,
               },
               where: 'id =?',
               whereArgs: [widget.product?.id]);
