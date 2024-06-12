@@ -1,6 +1,5 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/helpers/sql_helper.dart';
 import 'package:point_of_sales/models/product_model.dart';
@@ -8,6 +7,7 @@ import 'package:point_of_sales/screens/product_screen/product_operations.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';
 import 'package:point_of_sales/shared_component/default_snackbar.dart';
 import 'package:point_of_sales/shared_component/drop_down_button.dart';
+import 'package:point_of_sales/shared_component/filter_widget.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 
 class Products extends StatefulWidget {
@@ -177,8 +177,7 @@ class _ProductsState extends State<Products> {
   var priceEqualToController = TextEditingController();
 
   Future<void> filterByPriceGreaterThan() async {
-    double? price =
-        double.tryParse(priceGreaterThanController.text); // Add this line
+    double? price = double.tryParse(priceGreaterThanController.text);
     if (price == null) {
       defaultSnackBar(
           text: 'Please enter a valid price',
@@ -192,7 +191,7 @@ class _ProductsState extends State<Products> {
                   Inner JOIN categories C
                   On P.categoryId = C.id
                         where P.price > ?
-                        """, [price]); // Modified this line
+                        """, [price]);
 
     if (data.isNotEmpty) {
       products = [];
@@ -206,8 +205,7 @@ class _ProductsState extends State<Products> {
   }
 
   Future<void> filterByPriceLessThan() async {
-    double? price =
-        double.tryParse(priceLessThanController.text); // Add this line
+    double? price = double.tryParse(priceLessThanController.text);
     if (price == null) {
       defaultSnackBar(
           text: 'Please enter a valid price',
@@ -221,7 +219,7 @@ class _ProductsState extends State<Products> {
                   Inner JOIN categories C
                   On P.categoryId = C.id
                         where P.price < ?
-                        """, [price]); // Modified this line
+                        """, [price]);
 
     if (data.isNotEmpty) {
       products = [];
@@ -249,7 +247,7 @@ class _ProductsState extends State<Products> {
                   Inner JOIN categories C
                   On P.categoryId = C.id
                         where P.price == ?
-                        """, [price]); // Modified this line
+                        """, [price]);
 
     if (data.isNotEmpty) {
       products = [];
@@ -267,8 +265,7 @@ class _ProductsState extends State<Products> {
   var stockEqualToController = TextEditingController();
 
   Future<void> filterByStockGreaterThan() async {
-    double? stock =
-        double.tryParse(stockGreaterThanController.text); // Add this line
+    double? stock = double.tryParse(stockGreaterThanController.text);
     if (stock == null) {
       defaultSnackBar(
           text: 'Please enter a valid stock number',
@@ -282,7 +279,7 @@ class _ProductsState extends State<Products> {
                   Inner JOIN categories C
                   On P.categoryId = C.id
                         where P.stock > ?
-                        """, [stock]); // Modified this line
+                        """, [stock]);
 
     if (data.isNotEmpty) {
       products = [];
@@ -296,8 +293,7 @@ class _ProductsState extends State<Products> {
   }
 
   Future<void> filterByStockLessThan() async {
-    double? stock =
-        double.tryParse(stockLessThanController.text); // Add this line
+    double? stock = double.tryParse(stockLessThanController.text);
     if (stock == null) {
       defaultSnackBar(
           text: 'Please enter a valid stock number',
@@ -311,7 +307,7 @@ class _ProductsState extends State<Products> {
                   Inner JOIN categories C
                   On P.categoryId = C.id
                         where P.stock < ?
-                        """, [stock]); // Modified this line
+                        """, [stock]);
 
     if (data.isNotEmpty) {
       products = [];
@@ -339,7 +335,7 @@ class _ProductsState extends State<Products> {
                   Inner JOIN categories C
                   On P.categoryId = C.id
                         where P.stock == ?
-                        """, [stock]); // Modified this line
+                        """, [stock]);
 
     if (data.isNotEmpty) {
       products = [];
@@ -794,31 +790,4 @@ class DataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
-}
-
-Widget filterData(
-    {required String text, required TextEditingController controller}) {
-  return Row(
-    children: [
-      textInApp(text: text, fontSize: 25),
-      const SizedBox(
-        width: 30,
-      ),
-      Expanded(
-        child: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-        ),
-      ),
-      const SizedBox(
-        width: 50,
-      ),
-    ],
-  );
 }

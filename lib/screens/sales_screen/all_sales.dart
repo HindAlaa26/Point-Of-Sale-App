@@ -6,6 +6,7 @@ import 'package:point_of_sales/screens/sales_screen/sales_screen.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';
 import 'package:point_of_sales/shared_component/default_snackbar.dart';
 import 'package:point_of_sales/shared_component/drop_down_button.dart';
+import 'package:point_of_sales/shared_component/filter_widget.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import '../../models/order_model.dart';
 
@@ -148,6 +149,184 @@ class _AllSalesPageState extends State<AllSalesPage> {
     }
   }
 
+  ///////////////////////////////////////////////////////////
+
+  var totalPriceGreaterThanController = TextEditingController();
+  var totalPriceLessThanController = TextEditingController();
+  var totalPriceEqualToController = TextEditingController();
+
+  Future<void> filterByTotalPriceGreaterThan() async {
+    double? totalPrice = double.tryParse(totalPriceGreaterThanController.text);
+    if (totalPrice == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid Total Price',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                       Select O.*,C.name as clientName,C.phone as clientPhone from orders O
+                          Inner JOIN clients C
+                          On O.clientId = C.id                       
+                            where O.totalPrice > ?                         
+                        """, [totalPrice]);
+
+    if (data.isNotEmpty) {
+      orders = [];
+      for (var item in data) {
+        orders?.add(Order.fromJson(item));
+      }
+    } else {
+      orders = [];
+    }
+    setState(() {});
+  }
+
+  Future<void> filterByTotalPriceLessThan() async {
+    double? totalPrice = double.tryParse(totalPriceLessThanController.text);
+    if (totalPrice == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid Total Price',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                        Select O.*,C.name as clientName,C.phone as clientPhone from orders O
+                          Inner JOIN clients C
+                          On O.clientId = C.id                       
+                            where O.totalPrice < ?                                                                      
+                        """, [totalPrice]);
+
+    if (data.isNotEmpty) {
+      orders = [];
+      for (var item in data) {
+        orders?.add(Order.fromJson(item));
+      }
+    } else {
+      orders = [];
+    }
+    setState(() {});
+  }
+
+  Future<void> filterByTotalPriceEqualToThan() async {
+    double? totalPrice = double.tryParse(totalPriceEqualToController.text);
+    if (totalPrice == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid Total Price',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                        Select O.*,C.name as clientName,C.phone as clientPhone from orders O
+                          Inner JOIN clients C
+                          On O.clientId = C.id                      
+                            where O.totalPrice == ?                 
+                            """, [totalPrice]);
+
+    if (data.isNotEmpty) {
+      orders = [];
+      for (var item in data) {
+        orders?.add(Order.fromJson(item));
+      }
+    } else {
+      orders = [];
+    }
+    setState(() {});
+  }
+
+  var discountGreaterThanController = TextEditingController();
+  var discountLessThanController = TextEditingController();
+  var discountEqualToController = TextEditingController();
+
+  Future<void> filterByDiscountGreaterThan() async {
+    double? discount = double.tryParse(discountGreaterThanController.text);
+    if (discount == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid Discount number',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                         Select O.*,C.name as clientName,C.phone as clientPhone from orders O
+                          Inner JOIN clients C
+                          On O.clientId = C.id
+                        where O.discount > ?
+                        """, [discount]);
+
+    if (data.isNotEmpty) {
+      orders = [];
+      for (var item in data) {
+        orders?.add(Order.fromJson(item));
+      }
+    } else {
+      orders = [];
+    }
+    setState(() {});
+  }
+
+  Future<void> filterByDiscountLessThan() async {
+    double? discount = double.tryParse(discountLessThanController.text);
+    if (discount == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid discount number',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                         Select O.*,C.name as clientName,C.phone as clientPhone from orders O
+                          Inner JOIN clients C
+                          On O.clientId = C.id
+                        where O.discount < ?
+                        """, [discount]);
+
+    if (data.isNotEmpty) {
+      orders = [];
+      for (var item in data) {
+        orders?.add(Order.fromJson(item));
+      }
+    } else {
+      orders = [];
+    }
+    setState(() {});
+  }
+
+  Future<void> filterByDiscountEqualToThan() async {
+    double? discount = double.tryParse(discountEqualToController.text);
+    if (discount == null) {
+      defaultSnackBar(
+          text: 'Please enter a valid discount number',
+          backgroundColor: Colors.red,
+          context: context);
+      return;
+    }
+    var sqlHelper = GetIt.I.get<SqlHelper>();
+    var data = await sqlHelper.database!.rawQuery("""
+                         Select O.*,C.name as clientName,C.phone as clientPhone from orders O
+                          Inner JOIN clients C
+                          On O.clientId = C.id
+                        where O.discount == ?
+                        """, [discount]);
+
+    if (data.isNotEmpty) {
+      orders = [];
+      for (var item in data) {
+        orders?.add(Order.fromJson(item));
+      }
+    } else {
+      orders = [];
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,11 +336,12 @@ class _AllSalesPageState extends State<AllSalesPage> {
       ),
       body: Column(
         children: [
-          //Search
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //search
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
@@ -204,8 +384,9 @@ class _AllSalesPageState extends State<AllSalesPage> {
                   ),
                 ),
                 const SizedBox(
-                  width: 15,
+                  width: 10,
                 ),
+                //sort
                 SalesDropDownButton(
                   selectedValue: sortColumnIndex,
                   onChanged: (int? value) {
@@ -214,6 +395,154 @@ class _AllSalesPageState extends State<AllSalesPage> {
                     print("value===================$value");
                     setState(() {});
                   },
+                ),
+                //filter
+                MaterialButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  textInApp(
+                                      text: "Filter According To :",
+                                      fontSize: 25,
+                                      color: Colors.blueGrey),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      // total price Greater than
+                                      filterData(
+                                          text: "Total Price Greater than",
+                                          controller:
+                                              totalPriceGreaterThanController),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      // total price less than
+                                      filterData(
+                                          text: "Total Price Less than",
+                                          controller:
+                                              totalPriceLessThanController),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      // total price equal
+                                      filterData(
+                                          text: "Total Price Equal than",
+                                          controller:
+                                              totalPriceEqualToController),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      //////////////////////discount///////////////////////
+                                      // discount Greater than
+                                      filterData(
+                                          text: "Discount Greater than",
+                                          controller:
+                                              discountGreaterThanController),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      // discount less than
+                                      filterData(
+                                          text: "Discount Less than",
+                                          controller:
+                                              discountLessThanController),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      // discount equal
+                                      filterData(
+                                          text: "Discount Equal than",
+                                          controller:
+                                              discountEqualToController),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Center(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blueGrey),
+                                  onPressed: () {
+                                    if (totalPriceGreaterThanController
+                                        .text.isNotEmpty) {
+                                      filterByTotalPriceGreaterThan();
+                                      totalPriceGreaterThanController.clear();
+                                      Navigator.pop(context);
+                                    } else if (totalPriceLessThanController
+                                        .text.isNotEmpty) {
+                                      filterByTotalPriceLessThan();
+                                      totalPriceLessThanController.clear();
+                                      Navigator.pop(context);
+                                    } else if (totalPriceEqualToController
+                                        .text.isNotEmpty) {
+                                      filterByTotalPriceEqualToThan();
+                                      totalPriceEqualToController.clear();
+                                      Navigator.pop(context);
+                                    }
+                                    ///////// discount //////////////////
+                                    else if (discountGreaterThanController
+                                        .text.isNotEmpty) {
+                                      filterByDiscountGreaterThan();
+                                      discountGreaterThanController.clear();
+                                      Navigator.pop(context);
+                                    } else if (discountLessThanController
+                                        .text.isNotEmpty) {
+                                      filterByDiscountLessThan();
+                                      discountLessThanController.clear();
+                                      Navigator.pop(context);
+                                    } else if (discountEqualToController
+                                        .text.isNotEmpty) {
+                                      filterByDiscountEqualToThan();
+                                      discountEqualToController.clear();
+                                      Navigator.pop(context);
+                                    } else {
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                                  child: textInApp(
+                                      text: "Apply Filters",
+                                      color: Colors.white),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  padding: const EdgeInsets.only(top: 5),
+                  minWidth: 0,
+                  child: const Icon(
+                    Icons.filter_list_sharp,
+                    color: Colors.blueGrey,
+                    size: 35,
+                  ),
                 ),
               ],
             ),
