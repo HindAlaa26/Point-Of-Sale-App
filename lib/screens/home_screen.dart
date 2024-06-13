@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:point_of_sales/shared_component/drawer_widget.dart';
 import 'package:point_of_sales/shared_component/home_header_widgets.dart';
 import 'package:point_of_sales/shared_component/text_in_app.dart';
 import '../helpers/sql_helper.dart';
@@ -46,42 +47,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      drawer: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 80),
-          child: Column(
-            children: [
-              Container(
-                  color: const Color.fromRGBO(15, 87, 217, 1),
-                  width: double.infinity,
-                  child: ListTile(
-                    leading: textInApp(
-                        text: "Database BackUp",
-                        color: Colors.white,
-                        fontSize: 25),
-                    trailing: const Icon(
-                      Icons.backup,
-                      color: Colors.white,
-                    ),
-                  )),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                  color: const Color.fromRGBO(7, 60, 154, 1.0),
-                  width: double.infinity,
-                  child: ListTile(
-                    leading: textInApp(
-                        text: "About us", color: Colors.white, fontSize: 30),
-                    trailing: const Icon(
-                      Icons.group,
-                      color: Colors.white,
-                    ),
-                  )),
-            ],
-          ),
-        ),
-      ),
+      drawer: drawerWidget(context),
       appBar: AppBar(),
       body: Column(
         children: [
