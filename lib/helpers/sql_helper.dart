@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 class SqlHelper {
   Database? database;
@@ -133,5 +136,47 @@ class SqlHelper {
       'currencyTo': 'EGP',
       'rate': 50.0,
     });
+  }
+
+  Future<void> backupDatabase() async {
+    try {
+      final databasePath = await getDatabasesPath();
+      const databaseName = 'POS.db';
+      final databaseFilePath = join(databasePath, databaseName);
+      print("databaseFilePath>>>>>>>>>>>>>>>>>>>>>>$databaseFilePath");
+      final documentsDirectory = await getApplicationDocumentsDirectory();
+      final backupDirectory = join(documentsDirectory.path, 'database_backups');
+      print("backupDirectory>>>>>>>>>>>>>>>>>>>>>>$backupDirectory");
+      await Directory(backupDirectory).create(recursive: true);
+
+      final backupFilePath = join(backupDirectory, databaseName);
+      await File(databaseFilePath).copy(backupFilePath);
+
+      print('Database backup created at: $backupFilePath');
+    } catch (e) {
+      print('Error creating database backup: $e');
+    }
+  }
+
+  Future<void> restoreFromBackup() async {
+    try {
+      final databasePath = await getDatabasesPath();
+      const databaseName = 'POS.db';
+      final databaseFilePath = join(databasePath, databaseName);
+
+      final documentsDirectory = await getApplicationDocumentsDirectory();
+      final backupDirectory = join(documentsDirectory.path, 'database_backups');
+      final backupFilePath = join(backupDirectory, databaseName);
+
+      if (await File(backupFilePath).exists()) {
+        await File(backupFilePath).copy(databaseFilePath);
+        await createDatabase();
+        print('Database restored from backup');
+      } else {
+        print('Backup file not found: $backupFilePath');
+      }
+    } catch (e) {
+      print('Error restoring database from backup: $e');
+    }
   }
 }
