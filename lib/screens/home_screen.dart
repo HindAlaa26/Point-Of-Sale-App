@@ -17,7 +17,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     init();
-    fetchData();
 
     super.initState();
   }
@@ -26,6 +25,7 @@ class _HomePageState extends State<HomePage> {
     result = await GetIt.I.get<SqlHelper>().createTable();
     await GetIt.I.get<SqlHelper>().insertInitialData();
     await fetchExChargeRateData();
+    await fetchData();
     setState(() {
       isLoading = false;
     });

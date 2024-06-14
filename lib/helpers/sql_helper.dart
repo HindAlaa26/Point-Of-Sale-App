@@ -93,13 +93,6 @@ class SqlHelper {
 
   Future<double> getTodaySales() async {
     final db = database;
-    // final today = DateTime.now();
-    // final startOfDay =
-    //     DateTime(today.year, today.month, today.day).millisecondsSinceEpoch;
-    // final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59)
-    //     .millisecondsSinceEpoch;
-    // 'SELECT SUM(totalPrice) as totalSales FROM orders WHERE timestamp BETWEEN ? AND ?',
-    // [startOfDay, endOfDay],
     final result =
         await db?.rawQuery('SELECT SUM(totalPrice) as totalSales FROM orders ');
 
