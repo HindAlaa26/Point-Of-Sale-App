@@ -103,8 +103,6 @@ class _CategoriesState extends State<Categories> {
         var sqlHelper = GetIt.I.get<SqlHelper>();
         await sqlHelper.database!
             .delete("categories", where: 'id = ?', whereArgs: [category.id]);
-        // await sqlHelper.database!.delete("products",
-        //     where: 'categoryId = ?', whereArgs: [category.id]);
         getCategories(); // Refresh the categories list
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.green,
@@ -148,13 +146,7 @@ class _CategoriesState extends State<Categories> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, true);
+                    Navigator.pop(context);
                   },
                   child: const Text('Ok'),
                 ),
