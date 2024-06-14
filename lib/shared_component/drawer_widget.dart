@@ -35,11 +35,9 @@ Widget drawerWidget(BuildContext context) {
               },
             ),
             const Divider(),
-            textInApp(
-                color: Colors.white,
-                fontSize: 19,
-                text:
-                    "A Point of Sale (POS) application is a versatile system designed to streamline sales transactions,featuring an intuitive user interface,real-time inventory management and comprehensive customer relationship management.It provides essential accessibility features like adding category , products , clients and make new sales.The POS application includes reliable on-device backup capabilities,allowing for automated and manual backups directly to the device,ensuring data integrity and business continuity without relying on cloud storage."),
+            const SelectableText(
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                "A Point of Sale (POS) application is a versatile system designed to streamline sales transactions,featuring an intuitive user interface,real-time inventory management and comprehensive customer relationship management.It provides essential accessibility features like adding category , products , clients and make new sales.The POS application includes reliable on-device backup capabilities,allowing for automated and manual backups directly to the device,ensuring data integrity and business continuity without relying on cloud storage."),
             const Divider(),
             Center(
               child: ElevatedButton(
