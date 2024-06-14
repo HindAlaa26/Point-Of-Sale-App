@@ -1,5 +1,4 @@
 import 'package:data_table_2/data_table_2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:point_of_sales/shared_component/custom_table.dart';

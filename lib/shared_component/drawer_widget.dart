@@ -152,7 +152,7 @@ Widget drawerWidget(BuildContext context) {
                       width: 10,
                     ),
                     const Icon(
-                      Icons.backup,
+                      Icons.restore,
                       color: Colors.white,
                     ),
                   ],
