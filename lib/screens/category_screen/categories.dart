@@ -112,7 +112,7 @@ class _CategoriesState extends State<Categories> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.red,
           content: Text('Error when deleting category ${category.name}')));
-      await showDialog(
+      showDialog(
           barrierDismissible: false,
           context: context,
           builder: (context) {
@@ -139,7 +139,7 @@ class _CategoriesState extends State<Categories> {
                 children: [
                   textInApp(
                       text:
-                          "There is some products related to this category, please delete these products first",
+                          "There are some products related to this category, please delete these products first",
                       color: Colors.blue.shade700),
                 ],
               ),

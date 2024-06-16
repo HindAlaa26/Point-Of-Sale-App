@@ -118,6 +118,47 @@ class _ClientsState extends State<Clients> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.red,
           content: Text('Error when deleting client ${client.name}')));
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.info,
+                    color: Colors.blueGrey,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  textInApp(
+                      text: "Error",
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.bold),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textInApp(
+                      text:
+                          "${client.name} is found in all sales screen, please delete this client from all sales screen first",
+                      color: Colors.blue.shade700),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ok'),
+                ),
+              ],
+            );
+          });
       print('Error when deleting client $e');
     }
   }
