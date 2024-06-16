@@ -362,11 +362,6 @@ class _SalesScreenState extends State<SalesScreen> {
                             onPressed: () {
                               addDiscount = true;
                               setState(() {});
-
-                              // if (formKey.currentState!.validate() &&
-                              //     discountController.text.isNotEmpty) {
-                              //   addDiscount = false;
-                              // }
                             }),
                         const SizedBox(
                           height: 5,
@@ -382,12 +377,6 @@ class _SalesScreenState extends State<SalesScreen> {
                                     inputFormatters: [
                                       FilteringTextInputFormatter.digitsOnly,
                                     ],
-                                    // onSaved: (value) {
-                                    //   if (formKey.currentState!.validate() &&
-                                    //       value!.isNotEmpty) {
-                                    //     addDiscount = false;
-                                    //   }
-                                    // },
                                     prefixIcon: Icons.discount),
                               )
                             : const SizedBox(),
