@@ -498,7 +498,7 @@ class _ProductsState extends State<Products> {
                                     ),
                                     // price equal
                                     filterData(
-                                        text: "Price Equal than",
+                                        text: "Price Equal to",
                                         controller: priceEqualToController,
                                         isNumeric: true),
                                     const SizedBox(
@@ -523,7 +523,7 @@ class _ProductsState extends State<Products> {
                                     ),
                                     // stock equal
                                     filterData(
-                                        text: "Stock Equal than",
+                                        text: "Stock Equal to",
                                         controller: stockEqualToController,
                                         isNumeric: true),
                                   ],

@@ -129,10 +129,6 @@ class _AllSalesPageState extends State<AllSalesPage> {
           await txn.delete("orderProductItems",
               where: 'orderId = ?', whereArgs: [order.id]);
         });
-        // await sqlHelper.database!
-        //     .delete("orders", where: 'id = ?', whereArgs: [order.id]);
-        // await sqlHelper.database!.delete("orderProductItems",
-        //     where: 'orderId = ?', whereArgs: [order.id]);
         getOrders();
 
         defaultSnackBar(
@@ -448,7 +444,7 @@ class _AllSalesPageState extends State<AllSalesPage> {
                                       ),
                                       // total price equal
                                       filterData(
-                                          text: "Total Price Equal than",
+                                          text: "Total Price Equal to",
                                           controller:
                                               totalPriceEqualToController,
                                           isNumeric: true),
@@ -476,7 +472,7 @@ class _AllSalesPageState extends State<AllSalesPage> {
                                       ),
                                       // discount equal
                                       filterData(
-                                          text: "Discount Equal than",
+                                          text: "Discount Equal to",
                                           controller: discountEqualToController,
                                           isNumeric: true),
                                     ],
